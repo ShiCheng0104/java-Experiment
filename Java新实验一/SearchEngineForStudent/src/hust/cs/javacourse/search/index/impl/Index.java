@@ -5,7 +5,6 @@ import hust.cs.javacourse.search.index.AbstractIndex;
 import hust.cs.javacourse.search.index.AbstractPosting;
 import hust.cs.javacourse.search.index.AbstractPostingList;
 import hust.cs.javacourse.search.index.AbstractTerm;
-import hust.cs.javacourse.search.index.AbstractTermTuple;
 
 import java.io.File;
 import java.io.ObjectInputStream;
@@ -55,42 +54,7 @@ public String toString() {
      */
     @Override
 public void addDocument(AbstractDocument document) {
-    // Step 1: 记录文档的 docId 和 docPath
-    int docId = document.getDocId();
-    String docPath = document.getDocPath();
-    docIdToDocPathMapping.put(docId, docPath);
-
-    // Step 2: 遍历文档中的所有 term-tuple
-    for (AbstractTermTuple tuple : document.getTuples()) {
-        AbstractTerm term = tuple.term;
-        int position = tuple.curPos;
-
-        // Step 3: 获取 term 对应的 PostingList，如果没有则新建
-        AbstractPostingList postingList = termToPostingListMapping.get(term);
-        if (postingList == null) {
-            postingList = new PostingList(); // ← 你自己的 PostingList 实现
-            termToPostingListMapping.put(term, postingList);
-        }
-
-        // Step 4: 看 PostingList 中是否已有这个文档的 Posting
-        AbstractPosting targetPosting = null;
-        for (int i = 0; i < postingList.size(); i++) {
-            AbstractPosting posting = postingList.get(i);
-            if (posting.getDocId() == docId) {
-                targetPosting = posting;
-                break;
-            }
-        }
-
-        // Step 5: 如果这个文档还没出现在这个 term 的 PostingList 中，添加新的 Posting
-        if (targetPosting == null) {
-            targetPosting = new Posting(docId); // ← 你自己的 Posting 实现
-            postingList.add(targetPosting);
-        }
-
-        // Step 6: 添加这个词的位置（position）
-        targetPosting.addPosition(position);
-    }
+    
 }
 
 
